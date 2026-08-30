@@ -1,5 +1,5 @@
 --==================================================
--- NabeUI - Part 1
+-- NabeUI 改造版 - Part 1
 --==================================================
 
 local NabeUI = {}
@@ -13,19 +13,20 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- Settings / Theme
+-- Theme / Settings
 NabeUI.Theme = {
 	Name = "Default",
-	MainColor = Color3.fromRGB(80, 120, 255),
-	AccentColor = Color3.fromRGB(120, 200, 255),
-	BackgroundColor = Color3.fromRGB(20, 20, 24),
-	PanelColor = Color3.fromRGB(28, 28, 34),
-	SubPanelColor = Color3.fromRGB(36, 36, 44),
-	TextColor = Color3.fromRGB(245, 245, 245),
-	MutedTextColor = Color3.fromRGB(180, 180, 190),
+	MainColor = Color3.fromRGB(90, 140, 255),
+	AccentColor = Color3.fromRGB(130, 210, 255),
+	BackgroundColor = Color3.fromRGB(16, 16, 20),
+	PanelColor = Color3.fromRGB(24, 24, 30),
+	SubPanelColor = Color3.fromRGB(32, 32, 40),
+	TextColor = Color3.fromRGB(245, 245, 250),
+	MutedTextColor = Color3.fromRGB(175, 175, 185),
 	SuccessColor = Color3.fromRGB(70, 200, 120),
 	DangerColor = Color3.fromRGB(235, 90, 90),
 	StrokeColor = Color3.fromRGB(255, 255, 255),
+	ShadowColor = Color3.fromRGB(0, 0, 0),
 }
 
 NabeUI.Settings = {
@@ -78,14 +79,14 @@ end
 
 local function corner(parent, radius)
 	return create("UICorner", {
-		CornerRadius = radius or UDim.new(0, 8),
+		CornerRadius = radius or UDim.new(0, 10),
 		Parent = parent
 	})
 end
 
 local function stroke(parent, transparency, thickness)
 	return create("UIStroke", {
-		Transparency = transparency or 0.5,
+		Transparency = transparency or 0.55,
 		Thickness = thickness or 1,
 		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		Parent = parent
@@ -100,6 +101,18 @@ local function padding(parent, l, t, r, b)
 		PaddingBottom = UDim.new(0, b or 0),
 		Parent = parent
 	})
+end
+
+local function addGradient(parent, c1, c2, rotation)
+	local g = create("UIGradient", {
+		Rotation = rotation or 90,
+		Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, c1),
+			ColorSequenceKeypoint.new(1, c2),
+		}),
+		Parent = parent
+	})
+	return g
 end
 
 local function registerThemeUpdater(fn)
@@ -157,20 +170,30 @@ function NabeUI:Notify(title, message, duration)
 	if not window then return end
 
 	local holder = create("Frame", {
-		Size = UDim2.fromOffset(290, 66),
+		Size = UDim2.fromOffset(300, 70),
 		BackgroundColor3 = self.Theme.PanelColor,
 		BorderSizePixel = 0,
 		Parent = window.Gui
 	})
-	corner(holder, UDim.new(0, 10))
+	corner(holder, UDim.new(0, 12))
 	stroke(holder, 0.6, 1)
+	addGradient(holder, self.Theme.PanelColor, self.Theme.BackgroundColor, 90)
 
-	holder.Position = UDim2.new(1, -310, 1, -88)
+	holder.Position = UDim2.new(1, -320, 1, -92)
+
+	local bar = create("Frame", {
+		Size = UDim2.new(0, 4, 1, -16),
+		Position = UDim2.fromOffset(10, 8),
+		BackgroundColor3 = self.Theme.MainColor,
+		BorderSizePixel = 0,
+		Parent = holder
+	})
+	corner(bar, UDim.new(1, 0))
 
 	create("TextLabel", {
 		BackgroundTransparency = 1,
-		Position = UDim2.fromOffset(12, 8),
-		Size = UDim2.new(1, -24, 0, 18),
+		Position = UDim2.fromOffset(24, 8),
+		Size = UDim2.new(1, -34, 0, 18),
 		Font = Enum.Font.GothamBold,
 		Text = tostring(title),
 		TextSize = 14,
@@ -181,8 +204,8 @@ function NabeUI:Notify(title, message, duration)
 
 	create("TextLabel", {
 		BackgroundTransparency = 1,
-		Position = UDim2.fromOffset(12, 28),
-		Size = UDim2.new(1, -24, 0, 28),
+		Position = UDim2.fromOffset(24, 28),
+		Size = UDim2.new(1, -34, 0, 32),
 		Font = Enum.Font.Gotham,
 		Text = tostring(message),
 		TextSize = 13,
@@ -192,7 +215,7 @@ function NabeUI:Notify(title, message, duration)
 		Parent = holder
 	})
 
-	tween(holder, TweenInfo.new(0.18 * self.Settings.AnimationSpeed), {
+	tween(holder, TweenInfo.new(0.18 * self.Settings.AnimationSpeed, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
 		Position = holder.Position - UDim2.fromOffset(0, 6)
 	})
 
@@ -215,14 +238,15 @@ function NabeUI:Confirm(title, message, onYes, onNo)
 	})
 
 	local modal = create("Frame", {
-		Size = UDim2.fromOffset(360, 180),
-		Position = UDim2.new(0.5, -180, 0.5, -90),
+		Size = UDim2.fromOffset(380, 190),
+		Position = UDim2.new(0.5, -190, 0.5, -95),
 		BackgroundColor3 = self.Theme.BackgroundColor,
 		BorderSizePixel = 0,
 		Parent = overlay
 	})
-	corner(modal, UDim.new(0, 12))
+	corner(modal, UDim.new(0, 14))
 	stroke(modal, 0.6, 1)
+	addGradient(modal, self.Theme.BackgroundColor, self.Theme.PanelColor, 90)
 
 	create("TextLabel", {
 		BackgroundTransparency = 1,
@@ -239,7 +263,7 @@ function NabeUI:Confirm(title, message, onYes, onNo)
 	create("TextLabel", {
 		BackgroundTransparency = 1,
 		Position = UDim2.fromOffset(16, 44),
-		Size = UDim2.new(1, -32, 0, 68),
+		Size = UDim2.new(1, -32, 0, 72),
 		Font = Enum.Font.Gotham,
 		Text = tostring(message),
 		TextWrapped = true,
@@ -251,8 +275,8 @@ function NabeUI:Confirm(title, message, onYes, onNo)
 	})
 
 	local yes = create("TextButton", {
-		Size = UDim2.fromOffset(150, 34),
-		Position = UDim2.fromOffset(16, 132),
+		Size = UDim2.fromOffset(160, 36),
+		Position = UDim2.fromOffset(16, 140),
 		BackgroundColor3 = self.Theme.SuccessColor,
 		Text = "Yes",
 		TextColor3 = Color3.new(1,1,1),
@@ -262,11 +286,12 @@ function NabeUI:Confirm(title, message, onYes, onNo)
 		AutoButtonColor = false,
 		Parent = modal
 	})
-	corner(yes, UDim.new(0, 8))
+	corner(yes, UDim.new(0, 10))
+	addGradient(yes, self.Theme.SuccessColor, self.Theme.SuccessColor:Lerp(Color3.new(1,1,1), 0.1), 90)
 
 	local no = create("TextButton", {
-		Size = UDim2.fromOffset(150, 34),
-		Position = UDim2.new(1, -166, 0, 132),
+		Size = UDim2.fromOffset(160, 36),
+		Position = UDim2.new(1, -176, 0, 140),
 		BackgroundColor3 = self.Theme.DangerColor,
 		Text = "No",
 		TextColor3 = Color3.new(1,1,1),
@@ -276,7 +301,8 @@ function NabeUI:Confirm(title, message, onYes, onNo)
 		AutoButtonColor = false,
 		Parent = modal
 	})
-	corner(no, UDim.new(0, 8))
+	corner(no, UDim.new(0, 10))
+	addGradient(no, self.Theme.DangerColor, self.Theme.DangerColor:Lerp(Color3.new(1,1,1), 0.1), 90)
 
 	yes.Activated:Connect(function()
 		overlay:Destroy()
@@ -290,7 +316,11 @@ function NabeUI:Confirm(title, message, onYes, onNo)
 end
 
 --==================================================
--- NabeUI - Part 2
+-- Part 2 continues below
+--==================================================
+--==================================================
+-- NabeUI 改造版 - Part 2
+-- Part 1 の直後に貼ってください
 --==================================================
 
 local Window = {}
@@ -321,6 +351,7 @@ function NabeUI:CreateWindow(configOrTitle)
 	self.TabButtons = {}
 	self.SelectedTab = nil
 	self.Minimized = false
+	self.LastExpandedSize = self.Size
 	self._lastFire = 0
 
 	local gui = create("ScreenGui", {
@@ -332,25 +363,40 @@ function NabeUI:CreateWindow(configOrTitle)
 	self.Gui = gui
 	NabeUI._activeWindow = self
 
+	-- Shadow
+	local shadow = create("Frame", {
+		Size = UDim2.new(0, self.Size.X.Offset + 18, 0, self.Size.Y.Offset + 18),
+		Position = UDim2.new(self.Position.X.Scale, self.Position.X.Offset - 9, self.Position.Y.Scale, self.Position.Y.Offset - 9),
+		BackgroundColor3 = Color3.new(0, 0, 0),
+		BackgroundTransparency = 0.68,
+		BorderSizePixel = 0,
+		Parent = gui
+	})
+	corner(shadow, UDim.new(0, 18))
+	shadow.ZIndex = 1
+
 	local main = create("Frame", {
 		Size = self.Size,
 		Position = self.Position,
 		BackgroundColor3 = NabeUI.Theme.BackgroundColor,
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
+		ZIndex = 2,
 		Parent = gui
 	})
 	self.Main = main
-	corner(main, UDim.new(0, 12))
-	stroke(main, 0.65, 1)
+	corner(main, UDim.new(0, 14))
+	stroke(main, 0.62, 1)
 
 	local topbar = create("Frame", {
-		Size = UDim2.new(1, 0, 0, 44),
+		Size = UDim2.new(1, 0, 0, 46),
 		BackgroundColor3 = NabeUI.Theme.PanelColor,
 		BorderSizePixel = 0,
+		ZIndex = 3,
 		Parent = main
 	})
-	corner(topbar, UDim.new(0, 12))
+	corner(topbar, UDim.new(0, 14))
+	addGradient(topbar, NabeUI.Theme.PanelColor, NabeUI.Theme.BackgroundColor, 90)
 
 	local titleLabel = create("TextLabel", {
 		BackgroundTransparency = 1,
@@ -361,6 +407,7 @@ function NabeUI:CreateWindow(configOrTitle)
 		TextSize = 16,
 		TextColor3 = NabeUI.Theme.TextColor,
 		TextXAlignment = Enum.TextXAlignment.Left,
+		ZIndex = 4,
 		Parent = topbar
 	})
 
@@ -374,6 +421,7 @@ function NabeUI:CreateWindow(configOrTitle)
 		Font = Enum.Font.GothamBold,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
+		ZIndex = 4,
 		Parent = topbar
 	})
 	corner(minimize, UDim.new(0, 8))
@@ -388,23 +436,27 @@ function NabeUI:CreateWindow(configOrTitle)
 		Font = Enum.Font.GothamBold,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
+		ZIndex = 4,
 		Parent = topbar
 	})
 	corner(close, UDim.new(0, 8))
 
 	local tabBar = create("ScrollingFrame", {
-		Position = UDim2.fromOffset(10, 52),
-		Size = UDim2.fromOffset(self.TabWidth, self.Size.Y.Offset - 62),
+		Position = UDim2.fromOffset(10, 54),
+		Size = UDim2.fromOffset(self.TabWidth, self.Size.Y.Offset - 64),
 		BackgroundColor3 = NabeUI.Theme.PanelColor,
 		BorderSizePixel = 0,
 		ScrollBarThickness = self.ScrollBarThickness,
 		ScrollBarImageColor3 = NabeUI.Theme.MainColor,
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		CanvasSize = UDim2.new(),
+		ZIndex = 3,
 		Parent = main
 	})
-	corner(tabBar, UDim.new(0, 10))
+	corner(tabBar, UDim.new(0, 12))
+	stroke(tabBar, 0.75, 1)
 	padding(tabBar, 8, 8, 8, 8)
+	addGradient(tabBar, NabeUI.Theme.PanelColor, NabeUI.Theme.BackgroundColor, 90)
 
 	create("UIListLayout", {
 		Padding = UDim.new(0, 6),
@@ -413,13 +465,16 @@ function NabeUI:CreateWindow(configOrTitle)
 	})
 
 	local content = create("Frame", {
-		Position = UDim2.fromOffset(170, 52),
-		Size = UDim2.new(1, -180, 1, -62),
+		Position = UDim2.fromOffset(170, 54),
+		Size = UDim2.new(1, -180, 1, -64),
 		BackgroundColor3 = NabeUI.Theme.PanelColor,
 		BorderSizePixel = 0,
+		ZIndex = 3,
 		Parent = main
 	})
-	corner(content, UDim.new(0, 10))
+	corner(content, UDim.new(0, 12))
+	stroke(content, 0.75, 1)
+	addGradient(content, NabeUI.Theme.PanelColor, NabeUI.Theme.BackgroundColor, 90)
 	self.Content = content
 
 	local pages = create("Folder", {Parent = content})
@@ -433,12 +488,14 @@ function NabeUI:CreateWindow(configOrTitle)
 		ScrollBarThickness = 3,
 		AutomaticCanvasSize = Enum.AutomaticSize.Y,
 		CanvasSize = UDim2.new(),
+		ZIndex = 4,
 		Parent = content
 	})
 	padding(logPanel, 8, 8, 8, 8)
 	self._logPanel = logPanel
 	self._logList = create("UIListLayout", {Padding = UDim.new(0, 4), Parent = logPanel})
 
+	-- Drag
 	do
 		local dragging, dragStart, startPos, dragInput = false
 		topbar.InputBegan:Connect(function(input)
@@ -453,7 +510,9 @@ function NabeUI:CreateWindow(configOrTitle)
 		UserInputService.InputChanged:Connect(function(input)
 			if dragging and input == dragInput then
 				local delta = input.Position - dragStart
-				main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+				local newPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+				main.Position = newPos
+				shadow.Position = UDim2.new(newPos.X.Scale, newPos.X.Offset - 9, newPos.Y.Scale, newPos.Y.Offset - 9)
 			end
 		end)
 
@@ -464,11 +523,13 @@ function NabeUI:CreateWindow(configOrTitle)
 		end)
 	end
 
+	-- Resize
 	do
 		local resize = create("Frame", {
 			Size = UDim2.fromOffset(18, 18),
 			Position = UDim2.new(1, -18, 1, -18),
 			BackgroundTransparency = 1,
+			ZIndex = 4,
 			Parent = main
 		})
 
@@ -487,6 +548,7 @@ function NabeUI:CreateWindow(configOrTitle)
 				local newX = clamp(startSize.X.Offset + delta.X, self.MinSize.X, self.MaxSize.X)
 				local newY = clamp(startSize.Y.Offset + delta.Y, self.MinSize.Y, self.MaxSize.Y)
 				main.Size = UDim2.fromOffset(newX, newY)
+				shadow.Size = UDim2.fromOffset(newX + 18, newY + 18)
 			end
 		end)
 
@@ -497,12 +559,39 @@ function NabeUI:CreateWindow(configOrTitle)
 		end)
 	end
 
+	-- Minimize fix
 	minimize.Activated:Connect(function()
 		self.Minimized = not self.Minimized
-		local target = self.Minimized and UDim2.fromOffset(main.Size.X.Offset, 44) or UDim2.fromOffset(main.Size.X.Offset, main.Size.Y.Offset)
-		tween(main, TweenInfo.new(0.22 * NabeUI.Settings.AnimationSpeed, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = target})
-		content.Visible = not self.Minimized
-		tabBar.Visible = not self.Minimized
+
+		if self.Minimized then
+			self.LastExpandedSize = main.Size
+
+			tween(main, TweenInfo.new(0.24 * NabeUI.Settings.AnimationSpeed, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Size = UDim2.fromOffset(main.Size.X.Offset, 46)
+			})
+			tween(shadow, TweenInfo.new(0.24 * NabeUI.Settings.AnimationSpeed, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Size = UDim2.fromOffset(main.Size.X.Offset + 18, 46 + 18)
+			})
+
+			task.delay(0.12, function()
+				if main and main.Parent then
+					content.Visible = false
+					tabBar.Visible = false
+				end
+			end)
+		else
+			local targetSize = self.LastExpandedSize or self.Size or UDim2.fromOffset(680, 450)
+
+			content.Visible = true
+			tabBar.Visible = true
+
+			tween(main, TweenInfo.new(0.24 * NabeUI.Settings.AnimationSpeed, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Size = targetSize
+			})
+			tween(shadow, TweenInfo.new(0.24 * NabeUI.Settings.AnimationSpeed, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Size = UDim2.fromOffset(targetSize.X.Offset + 18, targetSize.Y.Offset + 18)
+			})
+		end
 	end)
 
 	close.Activated:Connect(function()
@@ -534,6 +623,7 @@ function NabeUI:CreateWindow(configOrTitle)
 			ScrollBarImageColor3 = NabeUI.Theme.MainColor,
 			AutomaticCanvasSize = Enum.AutomaticSize.Y,
 			CanvasSize = UDim2.new(),
+			ZIndex = 4,
 			Parent = pages
 		})
 		padding(tab.Page, 8, 8, 8, 8)
@@ -548,21 +638,50 @@ function NabeUI:CreateWindow(configOrTitle)
 			TextColor3 = NabeUI.Theme.TextColor,
 			BorderSizePixel = 0,
 			AutoButtonColor = false,
+			ZIndex = 4,
 			Parent = tabBar
 		})
-		corner(tabButton, UDim.new(0, 8))
+		corner(tabButton, UDim.new(0, 10))
+		stroke(tabButton, 0.8, 1)
+
+		local tabGlow = create("Frame", {
+			Size = UDim2.new(1, 0, 1, 0),
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			ZIndex = 5,
+			Parent = tabButton
+		})
+		corner(tabGlow, UDim.new(0, 10))
 
 		local function select()
 			for _, c in ipairs(pages:GetChildren()) do
 				if c:IsA("ScrollingFrame") then c.Visible = false end
 			end
 			for _, c in ipairs(tabBar:GetChildren()) do
-				if c:IsA("TextButton") then c.BackgroundColor3 = NabeUI.Theme.SubPanelColor end
+				if c:IsA("TextButton") then
+					c.BackgroundColor3 = NabeUI.Theme.SubPanelColor
+					local s = c:FindFirstChildOfClass("UIStroke")
+					if s then s.Transparency = 0.8 end
+				end
 			end
 			tab.Page.Visible = true
 			tabButton.BackgroundColor3 = NabeUI.Theme.MainColor
+			local s = tabButton:FindFirstChildOfClass("UIStroke")
+			if s then s.Transparency = 0.35 end
 			self.SelectedTab = tab
 		end
+
+		tabButton.MouseEnter:Connect(function()
+			if self.SelectedTab ~= tab then
+				tween(tabButton, TweenInfo.new(0.12 * NabeUI.Settings.AnimationSpeed), {BackgroundColor3 = NabeUI.Theme.MainColor:Lerp(Color3.new(1,1,1), 0.78)})
+			end
+		end)
+
+		tabButton.MouseLeave:Connect(function()
+			if self.SelectedTab ~= tab then
+				tween(tabButton, TweenInfo.new(0.12 * NabeUI.Settings.AnimationSpeed), {BackgroundColor3 = NabeUI.Theme.SubPanelColor})
+			end
+		end)
 
 		tabButton.Activated:Connect(function()
 			local now = os.clock()
@@ -580,6 +699,7 @@ function NabeUI:CreateWindow(configOrTitle)
 				TextSize = 15,
 				TextColor3 = NabeUI.Theme.AccentColor,
 				TextXAlignment = Enum.TextXAlignment.Left,
+				ZIndex = 4,
 				Parent = tab.Page
 			})
 			return section
@@ -594,6 +714,7 @@ function NabeUI:CreateWindow(configOrTitle)
 				TextSize = 13,
 				TextColor3 = NabeUI.Theme.MutedTextColor,
 				TextXAlignment = Enum.TextXAlignment.Left,
+				ZIndex = 4,
 				Parent = tab.Page
 			})
 			return label
@@ -601,12 +722,15 @@ function NabeUI:CreateWindow(configOrTitle)
 
 		function tab:AddButton(text, callback, danger)
 			local holder = create("Frame", {
-				Size = UDim2.new(1, 0, 0, 40),
+				Size = UDim2.new(1, 0, 0, 42),
 				BackgroundColor3 = NabeUI.Theme.SubPanelColor,
 				BorderSizePixel = 0,
+				ZIndex = 4,
 				Parent = tab.Page
 			})
-			corner(holder, UDim.new(0, 8))
+			corner(holder, UDim.new(0, 10))
+			stroke(holder, 0.8, 1)
+			addGradient(holder, NabeUI.Theme.SubPanelColor, NabeUI.Theme.BackgroundColor, 90)
 
 			local btn = create("TextButton", {
 				Size = UDim2.fromScale(1, 1),
@@ -616,6 +740,7 @@ function NabeUI:CreateWindow(configOrTitle)
 				Font = Enum.Font.GothamMedium,
 				TextSize = 14,
 				AutoButtonColor = false,
+				ZIndex = 5,
 				Parent = holder
 			})
 
@@ -638,21 +763,23 @@ function NabeUI:CreateWindow(configOrTitle)
 
 		function tab:AddToggle(text, default, callback)
 			local state = default and true or false
-			local holder = create("Frame", {Size = UDim2.new(1, 0, 0, 42), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, Parent = tab.Page})
-			corner(holder, UDim.new(0, 8))
+			local holder = create("Frame", {Size = UDim2.new(1, 0, 0, 44), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, ZIndex = 4, Parent = tab.Page})
+			corner(holder, UDim.new(0, 10))
+			stroke(holder, 0.82, 1)
+			addGradient(holder, NabeUI.Theme.SubPanelColor, NabeUI.Theme.BackgroundColor, 90)
 
-			local btn = create("TextButton", {Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Parent = holder})
-			create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 0), Size = UDim2.new(1, -80, 1, 0), Text = tostring(text), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, Parent = holder})
+			local btn = create("TextButton", {Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 5, Parent = holder})
+			create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 0), Size = UDim2.new(1, -80, 1, 0), Text = tostring(text), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5, Parent = holder})
 
-			local base = create("Frame", {Size = UDim2.fromOffset(40, 20), Position = UDim2.new(1, -52, 0.5, -10), BackgroundColor3 = NabeUI.Theme.BackgroundColor, BorderSizePixel = 0, Parent = holder})
+			local base = create("Frame", {Size = UDim2.fromOffset(44, 22), Position = UDim2.new(1, -56, 0.5, -11), BackgroundColor3 = NabeUI.Theme.BackgroundColor, BorderSizePixel = 0, ZIndex = 5, Parent = holder})
 			corner(base, UDim.new(1, 0))
-			local knob = create("Frame", {Size = UDim2.fromOffset(16, 16), Position = UDim2.fromOffset(2, 2), BackgroundColor3 = NabeUI.Theme.MutedTextColor, BorderSizePixel = 0, Parent = base})
+			local knob = create("Frame", {Size = UDim2.fromOffset(18, 18), Position = UDim2.fromOffset(2, 2), BackgroundColor3 = NabeUI.Theme.MutedTextColor, BorderSizePixel = 0, ZIndex = 6, Parent = base})
 			corner(knob, UDim.new(1, 0))
 
 			local function setState(v)
 				state = v and true or false
 				tween(knob, TweenInfo.new(0.16 * NabeUI.Settings.AnimationSpeed), {
-					Position = state and UDim2.fromOffset(22, 2) or UDim2.fromOffset(2, 2),
+					Position = state and UDim2.fromOffset(24, 2) or UDim2.fromOffset(2, 2),
 					BackgroundColor3 = state and NabeUI.Theme.SuccessColor or NabeUI.Theme.MutedTextColor
 				})
 				base.BackgroundColor3 = state and NabeUI.Theme.MainColor or NabeUI.Theme.BackgroundColor
@@ -676,14 +803,17 @@ function NabeUI:CreateWindow(configOrTitle)
 			decimals = decimals or 0
 			local value = clamp(default, min, max)
 
-			local holder = create("Frame", {Size = UDim2.new(1, 0, 0, 58), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, Parent = tab.Page})
-			corner(holder, UDim.new(0, 8))
+			local holder = create("Frame", {Size = UDim2.new(1, 0, 0, 60), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, ZIndex = 4, Parent = tab.Page})
+			corner(holder, UDim.new(0, 10))
+			stroke(holder, 0.82, 1)
+			addGradient(holder, NabeUI.Theme.SubPanelColor, NabeUI.Theme.BackgroundColor, 90)
 
-			create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 6), Size = UDim2.new(1, -24, 0, 18), Text = tostring(text), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, Parent = holder})
-			local vlabel = create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.new(1, -90, 0, 6), Size = UDim2.fromOffset(80, 18), TextColor3 = NabeUI.Theme.MutedTextColor, Font = Enum.Font.Gotham, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Right, Parent = holder})
-			local bg = create("Frame", {Position = UDim2.fromOffset(12, 34), Size = UDim2.new(1, -24, 0, 12), BackgroundColor3 = NabeUI.Theme.BackgroundColor, BorderSizePixel = 0, Parent = holder})
+			create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 6), Size = UDim2.new(1, -24, 0, 18), Text = tostring(text), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5, Parent = holder})
+			local vlabel = create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.new(1, -90, 0, 6), Size = UDim2.fromOffset(80, 18), TextColor3 = NabeUI.Theme.MutedTextColor, Font = Enum.Font.Gotham, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Right, ZIndex = 5, Parent = holder})
+
+			local bg = create("Frame", {Position = UDim2.fromOffset(12, 36), Size = UDim2.new(1, -24, 0, 12), BackgroundColor3 = NabeUI.Theme.BackgroundColor, BorderSizePixel = 0, ZIndex = 5, Parent = holder})
 			corner(bg, UDim.new(1, 0))
-			local fill = create("Frame", {BackgroundColor3 = NabeUI.Theme.MainColor, BorderSizePixel = 0, Parent = bg})
+			local fill = create("Frame", {BackgroundColor3 = NabeUI.Theme.MainColor, BorderSizePixel = 0, ZIndex = 6, Parent = bg})
 			corner(fill, UDim.new(1, 0))
 
 			local dragging = false
@@ -712,11 +842,14 @@ function NabeUI:CreateWindow(configOrTitle)
 		end
 
 		function tab:AddTextBox(text, placeholder, callback)
-			local holder = create("Frame", {Size = UDim2.new(1, 0, 0, 54), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, Parent = tab.Page})
-			corner(holder, UDim.new(0, 8))
-			create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 6), Size = UDim2.new(1, -24, 0, 16), Text = tostring(text), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, Parent = holder})
-			local box = create("TextBox", {Position = UDim2.fromOffset(12, 24), Size = UDim2.new(1, -24, 0, 22), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = "", PlaceholderText = placeholder or "", TextColor3 = NabeUI.Theme.TextColor, PlaceholderColor3 = NabeUI.Theme.MutedTextColor, Font = Enum.Font.Gotham, TextSize = 13, ClearTextOnFocus = false, BorderSizePixel = 0, Parent = holder})
-			corner(box, UDim.new(0, 6))
+			local holder = create("Frame", {Size = UDim2.new(1, 0, 0, 56), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, ZIndex = 4, Parent = tab.Page})
+			corner(holder, UDim.new(0, 10))
+			stroke(holder, 0.82, 1)
+			addGradient(holder, NabeUI.Theme.SubPanelColor, NabeUI.Theme.BackgroundColor, 90)
+
+			create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 6), Size = UDim2.new(1, -24, 0, 16), Text = tostring(text), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5, Parent = holder})
+			local box = create("TextBox", {Position = UDim2.fromOffset(12, 26), Size = UDim2.new(1, -24, 0, 22), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = "", PlaceholderText = placeholder or "", TextColor3 = NabeUI.Theme.TextColor, PlaceholderColor3 = NabeUI.Theme.MutedTextColor, Font = Enum.Font.Gotham, TextSize = 13, ClearTextOnFocus = false, BorderSizePixel = 0, ZIndex = 5, Parent = holder})
+			corner(box, UDim.new(0, 7))
 			box.FocusLost:Connect(function(enterPressed) safeCall(callback, box.Text, enterPressed) end)
 			return {Set = function(_, v) box.Text = tostring(v) end, Get = function() return box.Text end}
 		end
@@ -726,15 +859,18 @@ function NabeUI:CreateWindow(configOrTitle)
 			local current = default or items[1] or ""
 			local expanded = false
 
-			local holder = create("Frame", {Size = UDim2.new(1, 0, 0, 42), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, ClipsDescendants = true, Parent = tab.Page})
-			corner(holder, UDim.new(0, 8))
-			local btn = create("TextButton", {Size = UDim2.fromScale(1,1), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Parent = holder})
-			local label = create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12,0), Size = UDim2.new(1,-40,1,0), Text = tostring(text) .. ": " .. tostring(current), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, Parent = holder})
-			local arrow = create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.new(1,-26,0.5,-10), Size = UDim2.fromOffset(20,20), Text = "▾", TextColor3 = NabeUI.Theme.MutedTextColor, Font = Enum.Font.GothamBold, TextSize = 16, Parent = holder})
+			local holder = create("Frame", {Size = UDim2.new(1, 0, 0, 44), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, ClipsDescendants = true, ZIndex = 4, Parent = tab.Page})
+			corner(holder, UDim.new(0, 10))
+			stroke(holder, 0.82, 1)
+			addGradient(holder, NabeUI.Theme.SubPanelColor, NabeUI.Theme.BackgroundColor, 90)
 
-			local search = create("TextBox", {Visible = false, Position = UDim2.fromOffset(12,42), Size = UDim2.new(1,-24,0,24), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = "", PlaceholderText = "Search...", TextColor3 = NabeUI.Theme.TextColor, PlaceholderColor3 = NabeUI.Theme.MutedTextColor, Font = Enum.Font.Gotham, TextSize = 13, BorderSizePixel = 0, ClearTextOnFocus = false, Parent = holder})
+			local btn = create("TextButton", {Size = UDim2.fromScale(1,1), BackgroundTransparency = 1, Text = "", AutoButtonColor = false, ZIndex = 5, Parent = holder})
+			local label = create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12,0), Size = UDim2.new(1,-40,1,0), Text = tostring(text) .. ": " .. tostring(current), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5, Parent = holder})
+			local arrow = create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.new(1,-26,0.5,-10), Size = UDim2.fromOffset(20,20), Text = "▾", TextColor3 = NabeUI.Theme.MutedTextColor, Font = Enum.Font.GothamBold, TextSize = 16, ZIndex = 5, Parent = holder})
+
+			local search = create("TextBox", {Visible = false, Position = UDim2.fromOffset(12,44), Size = UDim2.new(1,-24,0,24), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = "", PlaceholderText = "Search...", TextColor3 = NabeUI.Theme.TextColor, PlaceholderColor3 = NabeUI.Theme.MutedTextColor, Font = Enum.Font.Gotham, TextSize = 13, BorderSizePixel = 0, ClearTextOnFocus = false, ZIndex = 5, Parent = holder})
 			corner(search, UDim.new(0,6))
-			local list = create("ScrollingFrame", {Visible = false, Position = UDim2.fromOffset(12,72), Size = UDim2.new(1,-24,1,-84), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(), Parent = holder})
+			local list = create("ScrollingFrame", {Visible = false, Position = UDim2.fromOffset(12,74), Size = UDim2.new(1,-24,1,-86), BackgroundTransparency = 1, BorderSizePixel = 0, ScrollBarThickness = 3, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(), ZIndex = 5, Parent = holder})
 			create("UIListLayout", {Padding = UDim.new(0, 6), Parent = list})
 
 			local function rebuild(filter)
@@ -745,14 +881,14 @@ function NabeUI:CreateWindow(configOrTitle)
 				for _, item in ipairs(items) do
 					local s = tostring(item)
 					if filter == "" or string.find(string.lower(s), filter, 1, true) then
-						local opt = create("TextButton", {Size = UDim2.new(1,0,0,28), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = s, TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.Gotham, TextSize = 13, BorderSizePixel = 0, AutoButtonColor = false, Parent = list})
+						local opt = create("TextButton", {Size = UDim2.new(1,0,0,28), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = s, TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.Gotham, TextSize = 13, BorderSizePixel = 0, AutoButtonColor = false, ZIndex = 6, Parent = list})
 						corner(opt, UDim.new(0,6))
 						opt.Activated:Connect(function()
 							current = s
 							label.Text = tostring(text) .. ": " .. tostring(current)
 							safeCall(callback, current)
 							expanded = false
-							tween(holder, TweenInfo.new(0.18 * NabeUI.Settings.AnimationSpeed), {Size = UDim2.new(1, 0, 0, 42)})
+							tween(holder, TweenInfo.new(0.18 * NabeUI.Settings.AnimationSpeed), {Size = UDim2.new(1, 0, 0, 44)})
 							task.delay(0.18 * NabeUI.Settings.AnimationSpeed, function()
 								search.Visible = false
 								list.Visible = false
@@ -768,10 +904,10 @@ function NabeUI:CreateWindow(configOrTitle)
 				if expanded then
 					search.Visible = true
 					list.Visible = true
-					tween(holder, TweenInfo.new(0.18 * NabeUI.Settings.AnimationSpeed), {Size = UDim2.new(1, 0, 0, 220)})
+					tween(holder, TweenInfo.new(0.18 * NabeUI.Settings.AnimationSpeed), {Size = UDim2.new(1, 0, 0, 230)})
 					arrow.Text = "▴"
 				else
-					tween(holder, TweenInfo.new(0.18 * NabeUI.Settings.AnimationSpeed), {Size = UDim2.new(1, 0, 0, 42)})
+					tween(holder, TweenInfo.new(0.18 * NabeUI.Settings.AnimationSpeed), {Size = UDim2.new(1, 0, 0, 44)})
 					task.delay(0.18 * NabeUI.Settings.AnimationSpeed, function()
 						search.Visible = false
 						list.Visible = false
@@ -803,14 +939,16 @@ function NabeUI:CreateWindow(configOrTitle)
 		function tab:AddColorPicker(text, default, callback)
 			default = default or Color3.fromRGB(255,255,255)
 			local current = default
-			local holder = create("Frame", {Size = UDim2.new(1,0,0,76), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, Parent = tab.Page})
-			corner(holder, UDim.new(0,8))
-			create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12,6), Size = UDim2.new(1,-24,0,16), Text = tostring(text), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, Parent = holder})
-			local preview = create("Frame", {Position = UDim2.fromOffset(12,28), Size = UDim2.fromOffset(36,36), BackgroundColor3 = current, BorderSizePixel = 0, Parent = holder})
+			local holder = create("Frame", {Size = UDim2.new(1,0,0,78), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, ZIndex = 4, Parent = tab.Page})
+			corner(holder, UDim.new(0,10))
+			stroke(holder, 0.82, 1)
+			addGradient(holder, NabeUI.Theme.SubPanelColor, NabeUI.Theme.BackgroundColor, 90)
+			create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12,6), Size = UDim2.new(1,-24,0,16), Text = tostring(text), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5, Parent = holder})
+			local preview = create("Frame", {Position = UDim2.fromOffset(12,30), Size = UDim2.fromOffset(36,36), BackgroundColor3 = current, BorderSizePixel = 0, ZIndex = 5, Parent = holder})
 			corner(preview, UDim.new(0,8))
-			local r = create("TextBox", {Position = UDim2.fromOffset(56,28), Size = UDim2.fromOffset(50,24), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = tostring(math.floor(current.R*255)), TextColor3 = NabeUI.Theme.TextColor, PlaceholderText = "R", BorderSizePixel = 0, Parent = holder})
-			local g = create("TextBox", {Position = UDim2.fromOffset(112,28), Size = UDim2.fromOffset(50,24), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = tostring(math.floor(current.G*255)), TextColor3 = NabeUI.Theme.TextColor, PlaceholderText = "G", BorderSizePixel = 0, Parent = holder})
-			local b = create("TextBox", {Position = UDim2.fromOffset(168,28), Size = UDim2.fromOffset(50,24), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = tostring(math.floor(current.B*255)), TextColor3 = NabeUI.Theme.TextColor, PlaceholderText = "B", BorderSizePixel = 0, Parent = holder})
+			local r = create("TextBox", {Position = UDim2.fromOffset(56,30), Size = UDim2.fromOffset(50,24), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = tostring(math.floor(current.R*255)), TextColor3 = NabeUI.Theme.TextColor, PlaceholderText = "R", BorderSizePixel = 0, ZIndex = 5, Parent = holder})
+			local g = create("TextBox", {Position = UDim2.fromOffset(112,30), Size = UDim2.fromOffset(50,24), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = tostring(math.floor(current.G*255)), TextColor3 = NabeUI.Theme.TextColor, PlaceholderText = "G", BorderSizePixel = 0, ZIndex = 5, Parent = holder})
+			local b = create("TextBox", {Position = UDim2.fromOffset(168,30), Size = UDim2.fromOffset(50,24), BackgroundColor3 = NabeUI.Theme.BackgroundColor, Text = tostring(math.floor(current.B*255)), TextColor3 = NabeUI.Theme.TextColor, PlaceholderText = "B", BorderSizePixel = 0, ZIndex = 5, Parent = holder})
 			for _, box in ipairs({r,g,b}) do corner(box, UDim.new(0,6)) end
 			local function apply()
 				local rr = clamp(tonumber(r.Text) or 255, 0, 255)
@@ -831,12 +969,14 @@ function NabeUI:CreateWindow(configOrTitle)
 			min, max = min or 0, max or 100
 			default = default or 0
 			local value = clamp(default, min, max)
-			local holder = create("Frame", {Size = UDim2.new(1,0,0,50), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, Parent = tab.Page})
-			corner(holder, UDim.new(0,8))
-			create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12,6), Size = UDim2.new(1,-24,0,16), Text = tostring(text), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, Parent = holder})
-			local bar = create("Frame", {Position = UDim2.fromOffset(12,26), Size = UDim2.new(1,-24,0,12), BackgroundColor3 = NabeUI.Theme.BackgroundColor, BorderSizePixel = 0, Parent = holder})
+			local holder = create("Frame", {Size = UDim2.new(1,0,0,52), BackgroundColor3 = NabeUI.Theme.SubPanelColor, BorderSizePixel = 0, ZIndex = 4, Parent = tab.Page})
+			corner(holder, UDim.new(0,10))
+			stroke(holder, 0.82, 1)
+			addGradient(holder, NabeUI.Theme.SubPanelColor, NabeUI.Theme.BackgroundColor, 90)
+			create("TextLabel", {BackgroundTransparency = 1, Position = UDim2.fromOffset(12,6), Size = UDim2.new(1,-24,0,16), Text = tostring(text), TextColor3 = NabeUI.Theme.TextColor, Font = Enum.Font.GothamMedium, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 5, Parent = holder})
+			local bar = create("Frame", {Position = UDim2.fromOffset(12,28), Size = UDim2.new(1,-24,0,12), BackgroundColor3 = NabeUI.Theme.BackgroundColor, BorderSizePixel = 0, ZIndex = 5, Parent = holder})
 			corner(bar, UDim.new(1,0))
-			local fill = create("Frame", {BackgroundColor3 = NabeUI.Theme.MainColor, BorderSizePixel = 0, Parent = bar})
+			local fill = create("Frame", {BackgroundColor3 = NabeUI.Theme.MainColor, BorderSizePixel = 0, ZIndex = 6, Parent = bar})
 			corner(fill, UDim.new(1,0))
 			local function setValue(v)
 				value = clamp(v, min, max)
