@@ -13,7 +13,7 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- Theme / Settings
+-- Settings / Theme
 NabeUI.Theme = {
 	Name = "Default",
 	MainColor = Color3.fromRGB(80, 120, 255),
@@ -290,11 +290,7 @@ function NabeUI:Confirm(title, message, onYes, onNo)
 end
 
 --==================================================
--- Part 2 continues below
---==================================================
---==================================================
 -- NabeUI - Part 2
--- Part 1 の直後にそのまま貼ってください
 --==================================================
 
 local Window = {}
@@ -316,12 +312,12 @@ function NabeUI:CreateWindow(configOrTitle)
 	self.Title = cfg.Title or "NabeUI"
 	self.Size = cfg.Size or UDim2.fromOffset(680, 450)
 	self.Position = cfg.Position or UDim2.new(0.5, -340, 0.5, -225)
-	self.MinSize = cfg.MinSize or self.Settings.WindowMinSize
-	self.MaxSize = cfg.MaxSize or self.Settings.WindowMaxSize
+	self.MinSize = cfg.MinSize or NabeUI.Settings.WindowMinSize
+	self.MaxSize = cfg.MaxSize or NabeUI.Settings.WindowMaxSize
 	self.MinimizeText = cfg.MinimizeText or "—"
 	self.CloseText = cfg.CloseText or "×"
 	self.TabWidth = cfg.TabWidth or 150
-	self.ScrollBarThickness = cfg.ScrollBarThickness or self.Settings.ScrollBarThickness
+	self.ScrollBarThickness = cfg.ScrollBarThickness or NabeUI.Settings.ScrollBarThickness
 	self.TabButtons = {}
 	self.SelectedTab = nil
 	self.Minimized = false
