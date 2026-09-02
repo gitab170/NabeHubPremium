@@ -1,5 +1,5 @@
 -- ============================================================================
--- メインスクリプト - 🌸さくらhubV0.7🌸 (v0.7.2.129)
+-- 
 -- ============================================================================
 
 -- ============================================================================
@@ -72,11 +72,11 @@ do
     local Theme = _G.Theme
 
     local Window = OrionLib:MakeWindow({
-        Name = "🌸さくらhubV0.7🌸",
+        Name = "なべHub さくら",
         HidePremium = false,
         SaveConfig = false,
         IntroEnabled = true,
-        IntroText = "🌸さくらhubV0.7🌸 読み込み中...",
+        IntroText = "なべHub 読み込み中...",
         ThemeColor = Theme.BackgroundColor,
         BackgroundColor = Theme.BackgroundColor,
         TextColor = Theme.TextColor
@@ -446,7 +446,7 @@ do
 
         local mainPart = SH.PianoConfig.Keyboard:FindFirstChild("Main", true) or SH.PianoConfig.Keyboard.PrimaryPart
         if not mainPart then 
-            warn("SakuraHub: ピアノのMainパーツが見つかりません")
+            warn("NabeHub: ピアノのMainパーツが見つかりません")
             return 
         end
         
@@ -2863,7 +2863,7 @@ do
         UtilityConfig.ThirdPerson = state
         if state then
             LocalPlayer.CameraMode = Enum.CameraMode.Classic
-            LocalPlayer.CameraMaxZoomDistance = 100
+            LocalPlayer.CameraMaxZoomDistance = 1000
             LocalPlayer.CameraMinZoomDistance = 0.5
         else
             LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
@@ -2880,7 +2880,7 @@ do
     MITab:AddSlider({
         Name = "TPWalk速度",
         Min = 16,
-        Max = 500,
+        Max = 5000,
         Default = UtilityConfig.TPWalkSpeed,
         Color = Theme.SliderColor,
         Increment = 5,
@@ -2963,7 +2963,7 @@ do
     local AttackTab = Window:MakeTab({ Name = "攻撃系", Icon = "rbxassetid://4483345998", PremiumOnly = false })
     
     -- 注意書き
-    AttackTab:AddParagraph("⚠️ 注意！", "悪用厳禁！")
+    AttackTab:AddParagraph("注意！", "悪用厳禁！")
     
     -- ================================================================
     -- セクション1: KICK V1 (旧セレクトKick)
@@ -3854,7 +3854,7 @@ do
     local ScriptHubTab = Window:MakeTab({ Name = "スクリプトhub", Icon = "rbxassetid://4483362458", PremiumOnly = false })
     
     -- 注意書き
-    ScriptHubTab:AddParagraph("⚠️ 注意", "一部外部スクリプトはさくらhub外の開発です 保証なし")
+    ScriptHubTab:AddParagraph("注意", "一部外部スクリプトはNabehub外の開発です 保証なし")
     
     ScriptHubTab:AddSection({ Name = "外部スクリプト読み込み" })
 
@@ -4156,24 +4156,24 @@ do
     })
 
     -- ================================================================
-    -- SaluraHUB-keyboard.GUI (新規追加)
+    -- NabeHUB-keyboard.GUI (新規追加)
     -- ================================================================
     GUITab:AddSection({ Name = "Keyboard GUI" })
     GUITab:AddButton({
-        Name = "SaluraHUB-keyboard.GUI",
+        Name = "NabeHUB-keyboard.GUI",
         Callback = function()
             local success, err = pcall(function()
                 loadstring(game:HttpGet("https://pastefy.app/LYB56LOl/raw"))()
             end)
             if success then
                 OrionLib:MakeNotification({
-                    Name = "SaluraHUB-keyboard.GUI",
+                    Name = "NabeHUB-keyboard.GUI",
                     Content = "読み込み成功！",
                     Time = 3
                 })
             else
                 OrionLib:MakeNotification({
-                    Name = "SaluraHUB-keyboard.GUI",
+                    Name = "NabeHUB-keyboard.GUI",
                     Content = "読み込み失敗: " .. tostring(err),
                     Time = 5
                 })
@@ -4529,7 +4529,7 @@ do
     PianoSongSec:AddButton({ Name = "再生を停止", Callback = function() _G.stopSong(); OrionLib:MakeNotification({ Name = "停止", Content = "曲の再生を停止しました", Time = 3 }) end })
 
     local ConverterSec = PianoTab:AddSection({ Name = "MIDI→JSON コンバーター" })
-    ConverterSec:AddButton({ Name = "🌐 コンバーターを開く (ブラウザ)", Callback = function()
+    ConverterSec:AddButton({ Name = "コンバーターを開く (ブラウザ)", Callback = function()
         local url = "https://saturngroup02.github.io/piano-MIDI-or-key/"
         local success, err = pcall(function()
             if syn and syn.open_url then syn.open_url(url)
@@ -4537,7 +4537,7 @@ do
         end)
         if not success then setclipboard(url); OrionLib:MakeNotification({ Name = "URLをコピーしました", Content = "ブラウザで開いてください: " .. url, Time = 8 }) end
     end })
-    ConverterSec:AddButton({ Name = "📋 URLをコピー", Callback = function()
+    ConverterSec:AddButton({ Name = "URLをコピー", Callback = function()
         setclipboard("https://saturngroup02.github.io/piano-MIDI-or-key/")
         OrionLib:MakeNotification({ Name = "URLをコピーしました", Content = "クリップボードにコピーしました", Time = 4 })
     end })
@@ -5629,26 +5629,8 @@ do
 end
 
 -- ============================================================================
--- ブロック51: 情報とサポートタブ
+-- ブロック51: 空欄
 -- ============================================================================
-do
-    local Window = _G.Window
-    local OrionLib = _G.OrionLib
-
-    local InfoTab = Window:MakeTab({ Name = "情報とサポート", Icon = "rbxassetid://4483362458", PremiumOnly = false })
-    InfoTab:AddSection({ Name = "詳細" })
-    InfoTab:AddLabel("バージョン: V0.7")
-    InfoTab:AddLabel("開発グループ: 土星グループ")
-    InfoTab:AddSection({ Name = "リンク" })
-    InfoTab:AddButton({ Name = "サポートサーバーに参加[ディスコードグローバル]", Callback = function()
-        setclipboard("https://discord.gg/qFQTe7rcyE")
-        OrionLib:MakeNotification({ Name = "リンクコピー", Content = "クリップボードにコピーしました", Time = 2 })
-    end })
-    InfoTab:AddButton({ Name = "サポートサーバーに参加[ラインオープンチャット日本専用]", Callback = function()
-        setclipboard("https://line.me/ti/g2/-CBPty1N0v2XuNPqaJm5xLmCBt0wBr3_vxrOqQ?utm_source=invitation&utm_medium=link_copy&utm_campaign=default")
-        OrionLib:MakeNotification({ Name = "リンクコピー", Content = "クリップボードにコピーしました", Time = 2 })
-    end })
-end
 
 -- ============================================================================
 -- ブロック52: 完了通知
@@ -5658,14 +5640,14 @@ do
 
     task.wait(1)
     OrionLib:MakeNotification({
-        Name = "🌸さくらhubV0.7🌸 起動完了",
+        Name = "NabeHub 起動完了",
         Content = "完全版 - 全機能正常動作",
         Image = "rbxassetid://4483362458",
         Time = 5
     })
 
     print("==========================================")
-    print("🌸さくらhubV0.7🌸 完全版")
+    print("NabeHub  完全版")
     print("==========================================")
 end
 -- ============================================================================
@@ -5712,11 +5694,11 @@ do
     local Theme = _G.Theme
 
     local Window = OrionLib:MakeWindow({
-        Name = "🌸さくらhubV0.7🌸",
+        Name = "NabeHub",
         HidePremium = false,
         SaveConfig = false,
         IntroEnabled = true,
-        IntroText = "🌸さくらhubV0.7🌸 読み込み中...",
+        IntroText = "NabeHub 読み込み中...",
         ThemeColor = Theme.BackgroundColor,
         BackgroundColor = Theme.BackgroundColor,
         TextColor = Theme.TextColor
@@ -6086,7 +6068,7 @@ do
 
         local mainPart = SH.PianoConfig.Keyboard:FindFirstChild("Main", true) or SH.PianoConfig.Keyboard.PrimaryPart
         if not mainPart then 
-            warn("SakuraHub: ピアノのMainパーツが見つかりません")
+            warn("NabeHub: ピアノのMainパーツが見つかりません")
             return 
         end
         
@@ -8520,7 +8502,7 @@ do
     MITab:AddSlider({
         Name = "TPWalk速度",
         Min = 16,
-        Max = 500,
+        Max = 5000,
         Default = UtilityConfig.TPWalkSpeed,
         Color = Theme.SliderColor,
         Increment = 5,
@@ -8603,7 +8585,7 @@ do
     local AttackTab = Window:MakeTab({ Name = "攻撃系", Icon = "rbxassetid://4483345998", PremiumOnly = false })
     
     -- 注意書き
-    AttackTab:AddParagraph("⚠️ 注意！", "悪用厳禁！")
+    AttackTab:AddParagraph("注意！", "悪用厳禁！")
     
     -- ================================================================
     -- セクション1: KICK V1 (旧セレクトKick)
@@ -9494,7 +9476,7 @@ do
     local ScriptHubTab = Window:MakeTab({ Name = "スクリプトhub", Icon = "rbxassetid://4483362458", PremiumOnly = false })
     
     -- 注意書き
-    ScriptHubTab:AddParagraph("⚠️ 注意", "一部外部スクリプトはさくらhub外の開発です 保証なし")
+    ScriptHubTab:AddParagraph("注意", "一部外部スクリプトはなべhub外の開発です 保証なし")
     
     ScriptHubTab:AddSection({ Name = "外部スクリプト読み込み" })
 
@@ -11269,26 +11251,8 @@ do
 end
 
 -- ============================================================================
--- ブロック51: 情報とサポートタブ
+-- ブロック51: 空欄
 -- ============================================================================
-do
-    local Window = _G.Window
-    local OrionLib = _G.OrionLib
-
-    local InfoTab = Window:MakeTab({ Name = "情報とサポート", Icon = "rbxassetid://4483362458", PremiumOnly = false })
-    InfoTab:AddSection({ Name = "詳細" })
-    InfoTab:AddLabel("バージョン: V0.7")
-    InfoTab:AddLabel("開発グループ: 土星グループ")
-    InfoTab:AddSection({ Name = "リンク" })
-    InfoTab:AddButton({ Name = "サポートサーバーに参加[ディスコードグローバル]", Callback = function()
-        setclipboard("https://discord.gg/qFQTe7rcyE")
-        OrionLib:MakeNotification({ Name = "リンクコピー", Content = "クリップボードにコピーしました", Time = 2 })
-    end })
-    InfoTab:AddButton({ Name = "サポートサーバーに参加[ラインオープンチャット日本専用]", Callback = function()
-        setclipboard("https://line.me/ti/g2/-CBPty1N0v2XuNPqaJm5xLmCBt0wBr3_vxrOqQ?utm_source=invitation&utm_medium=link_copy&utm_campaign=default")
-        OrionLib:MakeNotification({ Name = "リンクコピー", Content = "クリップボードにコピーしました", Time = 2 })
-    end })
-end
 
 -- ============================================================================
 -- ブロック52: 完了通知
@@ -11298,13 +11262,13 @@ do
 
     task.wait(1)
     OrionLib:MakeNotification({
-        Name = "🌸さくらhubV0.7🌸 起動完了",
+        Name = "NabeHub 起動完了",
         Content = "完全版 - 全機能正常動作",
         Image = "rbxassetid://4483362458",
         Time = 5
     })
 
     print("==========================================")
-    print("🌸さくらhubV0.7🌸 完全版")
+    print("NabeHub 完全版")
     print("==========================================")
 end
