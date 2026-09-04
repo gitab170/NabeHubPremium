@@ -241,7 +241,7 @@ do
                                 end
 
                                 -- 次の手裏剣の処理に入る前にわずかな間隔を空ける
-                                task.wait(0.05)
+                                task.wait(0.02)
                             end
                         end
 
@@ -401,7 +401,7 @@ do
                                 spawnAndBreakPart(targetPart)
                             end
                         end
-                        task.wait(0.8) -- 次の足元判定までの間隔（少し待つことでスパムを防ぐ）
+                        task.wait(0.5) -- 次の足元判定までの間隔（少し待つことでスパムを防ぐ）
                     end
                 end)
             else
