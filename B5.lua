@@ -410,30 +410,49 @@ do
         end
     })
 
-    -- [追加] マウスクリックで任意のパーツを消すトグル
-    local clickConnection = nil
-    BreakTab:CreateToggle({
-        Name = "クリックしたパーツ/地面を消す",
-        CurrentValue = false,
-        Flag = "ClickDeleteGround",
-        Callback = function(Value)
-            local plr = game.Players.LocalPlayer
-            local mouse = plr:GetMouse()
+    -- クリックしたパーツ/地面を消す（トリプルクリック版）
+local clickConnection = nil
+local clickCount = 0
+local lastClickTime = 0
+local CLICK_INTERVAL = 0.8 -- この時間内に3回クリックで発動（秒）
 
-            if Value then
-                clickConnection = mouse.Button1Down:Connect(function()
+BreakTab:CreateToggle({
+    Name = "クリックしたパーツ/地面を消す (3回クリック)",
+    CurrentValue = false,
+    Flag = "ClickDeleteGround",
+    Callback = function(Value)
+        local plr = game.Players.LocalPlayer
+        local mouse = plr:GetMouse()
+
+        if Value then
+            clickConnection = mouse.Button1Down:Connect(function()
+                local currentTime = tick()
+                
+                -- 前回のクリックから時間が経っていたらリセット
+                if currentTime - lastClickTime > CLICK_INTERVAL then
+                    clickCount = 0
+                end
+                
+                -- クリック回数を増やす
+                clickCount += 1
+                lastClickTime = currentTime
+                
+                -- 3回クリックしたら発動
+                if clickCount >= 4 then
+                    clickCount = 0 -- リセット
+                    
                     local targetPart = mouse.Target
                     if targetPart and targetPart:IsA("BasePart") and not targetPart:IsA("Terrain") then
                         spawnAndBreakPart(targetPart)
                     end
-                end)
-            else
-                if clickConnection then
-                    clickConnection:Disconnect()
-                    clickConnection = nil
                 end
-                cleanupGroundShurikens()
+            end)
+        else
+            if clickConnection then
+                clickConnection:Disconnect()
+                clickConnection = nil
             end
+            cleanupGroundShurikens()
         end
-    })
-end
+    end
+})
