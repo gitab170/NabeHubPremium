@@ -414,7 +414,7 @@ do
 local clickConnection = nil
 local clickCount = 0
 local lastClickTime = 0
-local CLICK_INTERVAL = 0.8 -- この時間内に3回クリックで発動（秒）
+local CLICK_INTERVAL = 1.5 -- この時間内に3回クリックで発動（秒）
 
 BreakTab:CreateToggle({
     Name = "クリックしたパーツ/地面を消す (3回クリック)",
@@ -438,7 +438,7 @@ BreakTab:CreateToggle({
                 lastClickTime = currentTime
                 
                 -- 3回クリックしたら発動
-                if clickCount >= 3 then
+                if clickCount >= 10 then
                     clickCount = 0 -- リセット
                     
                     local targetPart = mouse.Target
