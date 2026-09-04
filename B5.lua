@@ -438,7 +438,7 @@ BreakTab:CreateToggle({
                 lastClickTime = currentTime
                 
                 -- 3回クリックしたら発動
-                if clickCount >= 4 then
+                if clickCount >= 3 then
                     clickCount = 0 -- リセット
                     
                     local targetPart = mouse.Target
