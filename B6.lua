@@ -2,7 +2,7 @@ game.Players.LocalPlayer.PlayerScripts.CharacterAndBeamMove.Enabled = false
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
-loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+-- loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/sladkoeshkaogg-svg/XOCU/refs/heads/main/XOCU%20FAKELIBRORY.lua"))()
 
 Players = game:GetService('Players')
