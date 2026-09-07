@@ -16,7 +16,7 @@ end
 local Window = Rayfield:CreateWindow({
     Name = "rag kick Premium",
     LoadingTitle = "hub",
-    LoadingSubtitle = "by tanpopo",
+    LoadingSubtitle = "",
     ConfigurationSaving = {
         Enabled = true,
         FolderName = "RagHUB",
