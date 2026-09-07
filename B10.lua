@@ -14,6 +14,9 @@ local Window = OrionLib:MakeWindow({
     HidePremium = false,
     SaveConfig = true,
     ConfigFolder = "RagHUB"
+    IntroEnabled = true,
+    IntroText = "起動中…",
+    IntroIcon = "rbxassetid://2039310486"
 })
 
 -- ============================================
@@ -407,8 +410,8 @@ local function KickAll()
     end
     task.wait(0.1)
 
-    local radius = 30
-    local centerX, centerY, centerZ = 0, 6, 0
+    local radius = 20
+    local centerX, centerY, centerZ = 0, 7, 0
 
     for i, targetPlayer in ipairs(allPlayers) do
         local targetRoot = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
