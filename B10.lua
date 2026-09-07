@@ -13,10 +13,10 @@ local Window = OrionLib:MakeWindow({
     Name = "rag kick Premium",
     HidePremium = false,
     SaveConfig = true,
-    ConfigFolder = "RagHUB"
+    ConfigFolder = "RagHUB",
     IntroEnabled = true,
     IntroText = "起動中…",
-    IntroIcon = "rbxassetid://2039310486"
+    IntroIcon = "rbxassetid://2039310486",
 })
 
 -- ============================================
