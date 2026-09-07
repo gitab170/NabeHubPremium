@@ -407,8 +407,8 @@ local function KickAll()
     end
     task.wait(0.1)
 
-    local radius = 13
-    local centerX, centerY, centerZ = 0, 10, 0
+    local radius = 30
+    local centerX, centerY, centerZ = 0, 6, 0
 
     for i, targetPlayer in ipairs(allPlayers) do
         local targetRoot = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
