@@ -535,6 +535,39 @@ MainTab:AddButton({
     end
 })
 
+-- ============================================
+-- 三人称トグル
+-- ============================================
+local thirdPersonEnabled = false
+
+local function setThirdPerson(enabled)
+    thirdPersonEnabled = enabled
+    if enabled then
+        LP.CameraMaxZoomDistance = 1000
+        LP.CameraMinZoomDistance = 10
+        LP.CameraMode = Enum.CameraMode.Classic
+    else
+        LP.CameraMaxZoomDistance = 12.5
+        LP.CameraMinZoomDistance = 0.5
+        LP.CameraMode = Enum.CameraMode.LockFirstPerson
+    end
+end
+
+LP.CharacterAdded:Connect(function()
+    if thirdPersonEnabled then
+        task.wait(0.5)
+        setThirdPerson(true)
+    end
+end)
+
+MainTab:AddToggle({
+    Name = "三人称視点",
+    Default = false,
+    Callback = function(Value)
+        setThirdPerson(Value)
+    end
+})
+
 local InfoTab = Window:MakeTab({
     Name = "情報",
     Icon = "rbxassetid://4370211644",
